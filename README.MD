@@ -1,0 +1,1 @@
+Short, useful scripts to automatize repeating tasks.
