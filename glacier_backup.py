@@ -2,6 +2,9 @@ import boto3
 import zipfile
 import os
 from datetime import date
+import time
+
+run_time = time.time()
 
 def zip_folder(folder, archive_folder):
 	zipped_file = zipfile.ZipFile(archive_folder + folder.split('/')[-1] + "_" + str(date.today().isoformat()) + ".zip", "w")
@@ -30,4 +33,5 @@ with open("./conf/glacier_folders.txt", "r") as f:
 		zip_folder(folder, archive_folder)
 
 for f in os.listdir(archive_folder):
-	upload(f)
+	if os.path.getmtime(archive_folder + f) > run_time:
+		upload(f)
