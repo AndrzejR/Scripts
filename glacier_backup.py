@@ -7,7 +7,7 @@ import time
 run_time = time.time()
 
 def zip_folder(folder, archive_folder):
-	zipped_file = zipfile.ZipFile(archive_folder + folder.split('/')[-1] + "_" + str(date.today().isoformat()) + ".zip", "w")
+	zipped_file = zipfile.ZipFile(archive_folder + os.path.split(folder)[1] + "_" + str(date.today().isoformat()) + ".zip", "w")
 	for root, dirs, files in os.walk(folder):
 		for f in files:
 			zipped_file.write(os.path.join(root, f))
@@ -30,7 +30,8 @@ with open("./conf/glacier_backup.txt", "r") as conf:
 with open("./conf/glacier_folders.txt", "r") as f:
 	folders = f.read().splitlines()
 	for folder in folders:
-		zip_folder(folder, archive_folder)
+		if os.path.getmtime(folder) > run_time - 86400:
+			zip_folder(folder, archive_folder)
 
 for f in os.listdir(archive_folder):
 	if os.path.getmtime(archive_folder + f) > run_time:
